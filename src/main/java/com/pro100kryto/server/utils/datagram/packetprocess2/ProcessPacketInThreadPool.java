@@ -2,8 +2,8 @@ package com.pro100kryto.server.utils.datagram.packetprocess2;
 
 import com.pro100kryto.server.utils.datagram.objectpool.ObjectPool;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
-import com.sun.istack.Nullable;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class ProcessPacketInThreadPool
         <T extends ProcessPacketInThreadPool<?>>

@@ -2,7 +2,7 @@ package com.pro100kryto.server.utils.datagram.packets;
 
 import com.pro100kryto.server.utils.datagram.exceptions.PoolEmptyException;
 import com.pro100kryto.server.utils.datagram.objectpool.ObjectPool;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class PacketPool extends ObjectPool<Packet> {
     private final int packetSize;

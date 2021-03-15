@@ -6,7 +6,8 @@
 
     <groupId>com.pro100kryto.server.utils</groupId>
     <artifactId>Datagram</artifactId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
+
     <dependencies>
         <dependency>
             <groupId>com.pro100kryto.server</groupId>
@@ -15,10 +16,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-runtime</artifactId>
-            <version>RELEASE</version>
-            <scope>provided</scope>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.collections</groupId>
