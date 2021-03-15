@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: lib/annotations-13.0.jar
+  lib/eclipse-collections-api-11.0.0.M1.jar
+  lib/eclipse-collections-11.0.0.M1.jar
