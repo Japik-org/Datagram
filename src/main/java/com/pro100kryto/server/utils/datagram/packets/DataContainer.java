@@ -63,7 +63,7 @@ public class DataContainer {
         return Arrays.copyOfRange(buffer, from+minPos, to+minPos);
     }
 
-    public final void copyFrom(byte[] src, int srcPos, int destPos, int length) {
+    public final void writeFrom(byte[] src, int srcPos, int destPos, int length) {
         System.arraycopy(src, srcPos, buffer, destPos+minPos, length);
     }
 

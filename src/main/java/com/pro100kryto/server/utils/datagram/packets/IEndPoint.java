@@ -4,6 +4,6 @@ import java.net.InetAddress;
 
 public interface IEndPoint {
     InetAddress getAddress();
-
     int getPort();
+    boolean compare(IEndPoint endPoint);
 }

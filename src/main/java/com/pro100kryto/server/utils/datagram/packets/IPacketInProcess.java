@@ -11,7 +11,7 @@ public interface IPacketInProcess{
     InetAddress getAddress();
     int getPort();
 
-    void setEndPoint(EndPoint endPoint);
+    void setEndPoint(IEndPoint endPoint);
     IEndPoint getEndPoint();
 
     DataContainer getDataContainer();

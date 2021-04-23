@@ -10,7 +10,7 @@ public class Packet implements IPacket, IPacketInProcess, IRecycle {
     private PacketStatus packetStatus;
     private final DataCreator dataCreator;
     private final DataContainer dataContainer;
-    private EndPoint endPoint;
+    private IEndPoint endPoint;
 
     public Packet(DataContainer data) {
         this(data, null, 0);
@@ -68,7 +68,7 @@ public class Packet implements IPacket, IPacketInProcess, IRecycle {
     }
 
     @Override
-    public void setEndPoint(EndPoint endPoint) {
+    public void setEndPoint(IEndPoint endPoint) {
         this.endPoint = endPoint;
     }
 

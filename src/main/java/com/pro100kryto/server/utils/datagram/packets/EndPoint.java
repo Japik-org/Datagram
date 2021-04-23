@@ -30,6 +30,11 @@ public final class EndPoint implements IEndPoint{
         return port;
     }
 
+    @Override
+    public boolean compare(IEndPoint endPoint2) {
+        return endPoint2!=null && endPoint2.getAddress().equals(address);
+    }
+
     public void setPort(int port) {
         this.port = port;
     }

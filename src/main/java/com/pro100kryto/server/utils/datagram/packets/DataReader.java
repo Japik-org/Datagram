@@ -37,7 +37,7 @@ public class DataReader{
     }
 
     /**
-     * reset position and data container
+     * reset position, min pos, max pos
      */
     public void reset() {
         setPosition(0);
@@ -50,18 +50,20 @@ public class DataReader{
     }
 
     public short readShort(){
+        final short sh = readShort(bufferContainer.getRaw(), counter);/*
         short sh = ByteBuffer.wrap(new byte[]{
                 bufferContainer.get(counter+1), bufferContainer.get(counter)
-        }).getShort();
+        }).getShort();*/
         counter+=2;
         return sh;
     }
 
     public int readInt(){
+        final int i = readInt(bufferContainer.getRaw(), counter);/*
         int i = ByteBuffer.wrap(new byte[]{
                 bufferContainer.get(counter+3), bufferContainer.get(counter+2),
                 bufferContainer.get(counter+1), bufferContainer.get(counter)
-        }).getInt();
+        }).getInt();*/
         counter+=4;
         return i;
     }
@@ -87,34 +89,47 @@ public class DataReader{
         return new String(strBytes, StandardCharsets.UTF_8);
     }
 
+    public DataContainer getDataContainer() {
+        return bufferContainer;
+    }
+
     // ------ static
 
-    public static byte[] readReverse(byte[] data, int pos, int count){
+    //TODO
+/*
+    public static byte[] copyReverse(byte[] data, int pos, int count){
         byte[] res = new byte[count];
         for (int i = 0; i < count; i++) {
             res[count-i-1] = data[i];
         }
         return res;
-    }
+    }*/
 
     public static short readShort(byte[] data, int pos){
-        return ByteBuffer.wrap(new byte[]{
+        /*return ByteBuffer.wrap(new byte[]{
                 data[pos+1], data[pos]
-        }).getShort();
+        }).getShort();*/
+        return ByteBuffer.wrap(data, pos, 2).getShort();
     }
 
     public static int readInt(byte[] data, int pos){
-        return ByteBuffer.wrap(new byte[]{
+        /*return ByteBuffer.wrap(new byte[]{
                 data[pos+3], data[pos+2],
                 data[pos+1], data[pos]
-        }).getInt();
+        }).getInt();*/
+        return ByteBuffer.wrap(data, pos, 4).getInt();
     }
 
     public static long readLong(byte[] data, int pos){
-        return ByteBuffer.wrap(new byte[]{
+        /*return ByteBuffer.wrap(new byte[]{
                 data[pos+7], data[pos+6], data[pos+5], data[pos+4],
                 data[pos+3], data[pos+2], data[pos+1], data[pos]
-        }).getLong();
+        }).getLong();*/
+        return ByteBuffer.wrap(data, pos, 8).getLong();
+    }
+
+    public static float readFloat(byte[] data, int pos){
+        return ByteBuffer.wrap(data, pos, 4).getFloat();
     }
 
     @Override
