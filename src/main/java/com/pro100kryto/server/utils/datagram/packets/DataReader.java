@@ -83,6 +83,12 @@ public class DataReader{
         return readString(len);
     }
 
+    public float readFloat(){
+        final float f = readFloat(bufferContainer.getRaw(), counter);
+        counter+=4;
+        return f;
+    }
+
     public String readString(int len){
         byte[] strBytes = bufferContainer.copyOfRange(counter, (counter+=len));
         //ArrayUtils.reverse(strBytes);

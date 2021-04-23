@@ -90,6 +90,13 @@ public class DataCreator extends DataReader{
         }
     }
 
+    public void write(float... floats){
+        for (float f: floats){
+            byte[] iBytes = ByteBuffer.allocate(8).putFloat(f).array();
+            writeReverse(iBytes);
+        }
+    }
+
     public void write(String... strings){
         for (String i: strings){
             byte[] iBytes = i.getBytes(StandardCharsets.UTF_8);
