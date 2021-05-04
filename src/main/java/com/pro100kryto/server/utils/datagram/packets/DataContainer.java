@@ -115,4 +115,12 @@ public class DataContainer {
                 buffer.clone(),
                 maxPos, minPos);
     }
+
+    public int getOffsetOfRaw() {
+        return minPos;
+    }
+
+    public int getPositionOfRaw(int position){
+        return position + minPos;
+    }
 }

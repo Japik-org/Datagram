@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
 public class DataCreator extends DataReader{
@@ -24,14 +25,6 @@ public class DataCreator extends DataReader{
 
     public int getRemainingSize(){
         return bufferContainer.getLength()-getPosition();
-    }
-
-    public void writeReverse(byte... bytes){
-        int len = bytes.length;
-        for (int i = len; i > 0; i--) {
-            bufferContainer.set(counter+len-i, bytes[i-1]);
-        }
-        counter+=len;
     }
 
     public void writeFromByteStream(ByteArrayInputStream stream) {
@@ -70,30 +63,30 @@ public class DataCreator extends DataReader{
     }
 
     public void write(short... shorts){
-        for (short i: shorts){
-            byte[] iBytes = ByteBuffer.allocate(2).putShort(i).array();
-            writeReverse(iBytes);
+        for (short s: shorts){
+            writeTo(bufferContainer.getRaw(), bufferContainer.getPositionOfRaw(counter), s, byteOrder);
+            counter+=2;
         }
     }
 
     public void write(int... ints){
         for (int i: ints){
-            byte[] iBytes = ByteBuffer.allocate(4).putInt(i).array();
-            writeReverse(iBytes);
+            writeTo(bufferContainer.getRaw(), bufferContainer.getPositionOfRaw(counter), i, byteOrder);
+            counter += 4;
         }
     }
 
     public void write(long... longs){
-        for (long i: longs){
-            byte[] iBytes = ByteBuffer.allocate(8).putLong(i).array();
-            writeReverse(iBytes);
+        for (long l: longs){
+            writeTo(bufferContainer.getRaw(), bufferContainer.getPositionOfRaw(counter), l, byteOrder);
+            counter += 8;
         }
     }
 
     public void write(float... floats){
         for (float f: floats){
-            byte[] iBytes = ByteBuffer.allocate(8).putFloat(f).array();
-            writeReverse(iBytes);
+            writeTo(bufferContainer.getRaw(), bufferContainer.getPositionOfRaw(counter), f, byteOrder);
+            counter += 4;
         }
     }
 
@@ -149,34 +142,35 @@ public class DataCreator extends DataReader{
 
     // utility
     public IPacketInProcess createPacketInProcess(InetAddress address, int port){
-        Packet packet = new Packet(bufferContainer, address, port);
+        final Packet packet = new Packet(bufferContainer, address, port);
         packet.getDataCreator().setPosition(getDataLength()+1);
         return packet;
     }
 
     // ----------- static
 
-    public static void writeToReverse(byte[] dataDes, int pos, byte[] val){
-        int len = val.length;
-        for (int i = len; i > 0; i--) {
-            dataDes[pos+len-i] = val[i-1];
-        }
+    public static void writeTo(byte[] dataDes, int pos, short val, ByteOrder byteOrder){
+        final ByteBuffer buffer = ByteBuffer.allocate(2).order(byteOrder).putShort(val);
+        buffer.rewind();
+        buffer.get(dataDes, pos, 2);
     }
 
-    public static void writeTo(byte[] dataDes, int pos, short val){
-        byte[] iBytes = ByteBuffer.allocate(2).putShort(val).array();
-        dataDes[pos] = iBytes[1];
-        dataDes[pos+1] = iBytes[0];
+    public static void writeTo(byte[] dataDes, int pos, int val, ByteOrder byteOrder){
+        final ByteBuffer buffer = ByteBuffer.allocate(4).order(byteOrder).putInt(val);
+        buffer.rewind();
+        buffer.get(dataDes, pos, 4);
     }
 
-    public static void writeTo(byte[] dataDes, int pos, int val){
-        byte[] iBytes = ByteBuffer.allocate(4).putInt(val).array();
-        writeToReverse(dataDes, pos, iBytes);
+    public static void writeTo(byte[] dataDes, int pos, long val, ByteOrder byteOrder) {
+        final ByteBuffer buffer = ByteBuffer.allocate(8).order(byteOrder).putLong(val);
+        buffer.rewind();
+        buffer.get(dataDes, pos, 8);
     }
 
-    public static void writeTo(byte[] dataDes, int pos, long val) {
-        byte[] iBytes = ByteBuffer.allocate(8).putLong(val).array();
-        writeToReverse(dataDes, pos, iBytes);
+    public static void writeTo(byte[] dataDes, int pos, float val, ByteOrder byteOrder) {
+        final ByteBuffer buffer = ByteBuffer.allocate(4).order(byteOrder).putFloat(val);
+        buffer.rewind();
+        buffer.get(dataDes, pos, 4);
     }
 
     public void cutLeft(int count) {
