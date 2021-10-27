@@ -30,6 +30,10 @@ public class PacketPool extends ObjectPool<Packet> {
             return null;
         }
     }
+    
+    public IPacketInProcess getNextPacketOrThrow() throws PoolEmptyException {
+        return nextAndGet();
+    }
 
     public int getPacketSize() {
         return packetSize;
