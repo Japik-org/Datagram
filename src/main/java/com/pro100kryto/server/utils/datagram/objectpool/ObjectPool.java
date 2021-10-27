@@ -1,20 +1,22 @@
 package com.pro100kryto.server.utils.datagram.objectpool;
 
-import com.pro100kryto.server.utils.datagram.exceptions.PoolEmptyException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class ObjectPool <T extends IRecycle> {
+public abstract class ObjectPool <T extends IRecyclable> {
     protected final int capacity;
     protected final BlockingQueue<T> pool;
+    protected final ReentrantLock lock;
+    @Nullable
     private T nextObject = null;
-
-    private static final PoolEmptyException POOL_EMPTY_EXCEPTION = new PoolEmptyException();
 
     public ObjectPool(int capacity) {
         this.capacity = capacity;
         pool = new ArrayBlockingQueue<>(capacity);
+        lock = new ReentrantLock();
     }
 
     /**
@@ -28,32 +30,55 @@ public abstract class ObjectPool <T extends IRecycle> {
     }
 
     /**
-     * load next packet from pool
+     * load next packet from the pool if is necessary
      */
-    public synchronized void next() throws PoolEmptyException {
+    public void next() {
+        lock.lock();
         try {
-            nextObject = pool.poll();
-            nextObject.restore();
-            return;
-        } catch (NullPointerException ignored){
+            if (nextObject == null) {
+                nextObject = pool.poll();
+            }
+        } finally {
+            lock.unlock();
         }
-        throw POOL_EMPTY_EXCEPTION;
     }
 
-    public synchronized T get() {
-        return nextObject;
+    @Nullable
+    public T get() {
+        final T o;
+
+        lock.lock();
+        try {
+            o = nextObject;
+            nextObject = null;
+        } finally {
+            lock.unlock();
+        }
+
+        if (o == null){
+            return null;
+        }
+
+        o.restore();
+        return o;
     }
 
-    public synchronized T nextAndGet() throws PoolEmptyException {
-        next();
-        return get();
+    @Nullable
+    public T nextAndGet() {
+        final T o = pool.poll();
+
+        if (o == null){
+            return null;
+        }
+
+        o.restore();
+        return o;
     }
 
-    /**
-     * @throws IllegalStateException pool is full
-     */
     public void put(T object){
-        if (!object.isRecycled() || pool.size()>=capacity) throw new IllegalStateException();
+        if (!object.isRecycled()){
+            object.recycle();
+        }
         pool.add(object);
     }
 
@@ -99,7 +124,7 @@ public abstract class ObjectPool <T extends IRecycle> {
         return pool.contains(o);
     }
 
-    public synchronized boolean remove(T o){
+    public boolean remove(T o){
         return pool.remove(o);
     }
 }

@@ -1,8 +1,8 @@
 package com.pro100kryto.server.utils.datagram.packetprocess2;
 
-import com.pro100kryto.server.utils.datagram.objectpool.IRecycle;
+import com.pro100kryto.server.utils.datagram.objectpool.IRecyclable;
 
-public abstract class Process implements Runnable, IRecycle {
+public abstract class Process implements Runnable, IRecyclable {
     private static final IllegalStateException ILLEGAL_STATE_EXCEPTION = new IllegalStateException("Already recycled");
     private boolean isRecycled = true;
 

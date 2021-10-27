@@ -1,6 +1,6 @@
 package com.pro100kryto.server.utils.datagram.objectpool;
 
-public final class RecycleContainer<T> implements IRecycle{
+public final class RecycleContainer<T> implements IRecyclable {
     private final ObjectPool<RecycleContainer<T>> pool;
     private T object;
     private boolean isRecycled = true;

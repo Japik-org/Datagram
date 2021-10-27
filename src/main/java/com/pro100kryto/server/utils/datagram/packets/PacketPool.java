@@ -24,15 +24,15 @@ public class PacketPool extends ObjectPool<Packet> {
 
     @Nullable
     public IPacketInProcess getNextPacketOrNull(){
-        try {
-            return nextAndGet();
-        } catch (PoolEmptyException poolEmptyException) {
-            return null;
-        }
-    }
-    
-    public IPacketInProcess getNextPacketOrThrow() throws PoolEmptyException {
         return nextAndGet();
+    }
+
+    public IPacketInProcess getNextPacketOrThrow() throws PoolEmptyException {
+        final IPacketInProcess packetInProcess = nextAndGet();
+        if (packetInProcess == null){
+            throw new PoolEmptyException();
+        }
+        return packetInProcess;
     }
 
     public int getPacketSize() {
@@ -58,7 +58,7 @@ public class PacketPool extends ObjectPool<Packet> {
             pool.add(this);
         }
 
-        public void recycleAndDelete(){
+        public void recycleAndRemove(){
             super.recycle();
             pool.remove(this);
         }

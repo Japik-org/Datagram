@@ -1,12 +1,12 @@
 package com.pro100kryto.server.utils.datagram.packets;
 
-import com.pro100kryto.server.utils.datagram.objectpool.IRecycle;
+import com.pro100kryto.server.utils.datagram.objectpool.IRecyclable;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.channels.IllegalBlockingModeException;
 
-public class Packet implements IPacket, IPacketInProcess, IRecycle {
+public class Packet implements IPacket, IPacketInProcess, IRecyclable {
     private PacketStatus packetStatus;
     private final DataCreator dataCreator;
     private final DataContainer dataContainer;
