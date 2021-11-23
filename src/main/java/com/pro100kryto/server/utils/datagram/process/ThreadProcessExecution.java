@@ -2,14 +2,14 @@ package com.pro100kryto.server.utils.datagram.process;
 
 import java.util.concurrent.ThreadFactory;
 
-public final class ProcessExecutionThread implements IProcessExecution {
+public final class ThreadProcessExecution implements IProcessExecution {
     private final Thread thread;
 
-    public ProcessExecutionThread(Runnable runnable) {
+    public ThreadProcessExecution(Runnable runnable) {
         thread = new Thread(runnable);
     }
 
-    public ProcessExecutionThread(Runnable runnable, ThreadFactory threadFactory) {
+    public ThreadProcessExecution(Runnable runnable, ThreadFactory threadFactory) {
         thread = threadFactory.newThread(runnable);
     }
 

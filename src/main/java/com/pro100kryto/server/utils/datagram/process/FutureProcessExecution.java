@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.concurrent.Future;
 
 @RequiredArgsConstructor
-public final class ProcessExecutionFuture implements IProcessExecution {
+public final class FutureProcessExecution implements IProcessExecution {
     @Getter
     private final Future<?> future;
 

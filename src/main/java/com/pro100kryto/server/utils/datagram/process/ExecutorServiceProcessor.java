@@ -18,7 +18,7 @@ public final class ExecutorServiceProcessor implements IProcessor<Process>{
     }
 
     @Override
-    public IProcessExecution start(Process process) {
+    public IProcessExecution startProcess(Process process) {
         return process.submit(executor);
     }
 }

@@ -36,20 +36,23 @@ public class Process implements IRecyclable, Closeable {
     }
 
     public IProcessExecution createThread(){
-        return (processExecution = new ProcessExecutionThread(
+        return (processExecution = new ThreadProcessExecution(
                 runnable
         ));
     }
 
     public IProcessExecution createThread(ThreadFactory threadFactory){
-        return (processExecution = new ProcessExecutionThread(
+        return (processExecution = new ThreadProcessExecution(
                 runnable,
                 threadFactory
         ));
     }
 
+    /**
+     * @throws java.util.concurrent.RejectedExecutionException
+     */
     public IProcessExecution submit(ExecutorService executor){
-        return (processExecution = new ProcessExecutionFuture(
+        return (processExecution = new FutureProcessExecution(
                 executor.submit(runnable)
         ));
     }

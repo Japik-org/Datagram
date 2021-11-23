@@ -9,21 +9,28 @@ import org.jetbrains.annotations.Nullable;
 
 public class PacketProcess extends Process implements Runnable {
 
+    @NonNull
+    protected final IPacketReader packetReader;
+    @NonNull
+    protected final ILogger logger;
+    @Setter
+    protected boolean recycleOnFinish;
+
     @Getter @Setter
     @Nullable
     protected Packet packet = null;
 
-    @NonNull
-    protected final IPacketReader packetReader;
-
-    @NonNull
-    protected final ILogger logger;
-
-    public PacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger) {
+    public PacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger,
+                         boolean recycleOnFinish){
         super(id);
         this.packetReader = packetReader;
         this.logger = logger;
         runnable = this;
+        this.recycleOnFinish = recycleOnFinish;
+    }
+
+    public PacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger) {
+        this(id, packetReader, logger, true);
     }
 
     @Override
@@ -50,6 +57,10 @@ public class PacketProcess extends Process implements Runnable {
             packetReader.read(packet);
         } catch (Throwable e) {
             logger.exception(e, "Failed process packet");
+        }
+
+        if (recycleOnFinish){
+            recycle();
         }
     }
 }
