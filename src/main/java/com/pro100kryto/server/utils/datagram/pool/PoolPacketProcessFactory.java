@@ -1,5 +1,6 @@
 package com.pro100kryto.server.utils.datagram.pool;
 
+import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.utils.datagram.process.IPacketReader;
 import com.pro100kryto.server.utils.datagram.process.PacketProcess;
 import lombok.NonNull;
@@ -12,28 +13,34 @@ public final class PoolPacketProcessFactory extends APoolProcessFactory <PacketP
     @NonNull
     private final IPacketReader packetReader;
 
-    public PoolPacketProcessFactory(@NotNull IPacketReader packetReader, AtomicLong idCounter) {
+    @NonNull
+    private final ILogger logger;
+
+    public PoolPacketProcessFactory(@NotNull IPacketReader packetReader, @NonNull ILogger logger, AtomicLong idCounter) {
         super(idCounter);
         this.packetReader = packetReader;
+        this.logger = logger;
     }
 
-    public PoolPacketProcessFactory(@NotNull IPacketReader packetReader) {
+    public PoolPacketProcessFactory(@NotNull IPacketReader packetReader, @NonNull ILogger logger) {
         super();
         this.packetReader = packetReader;
+        this.logger = logger;
     }
 
     @Override
     public PacketProcess createRecycled() {
         return new PoolPacketProcess(
                 idCounter.incrementAndGet(),
-                packetReader
+                packetReader,
+                logger
         );
     }
 
     private final class PoolPacketProcess extends PacketProcess{
 
-        public PoolPacketProcess(long id, @NonNull IPacketReader packetReader) {
-            super(id, packetReader);
+        public PoolPacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger) {
+            super(id, packetReader, logger);
         }
 
         @Override

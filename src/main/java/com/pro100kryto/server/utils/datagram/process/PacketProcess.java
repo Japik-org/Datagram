@@ -1,12 +1,13 @@
 package com.pro100kryto.server.utils.datagram.process;
 
+import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.utils.datagram.packet.Packet;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-public class PacketProcess extends Process {
+public class PacketProcess extends Process implements Runnable {
 
     @Getter @Setter
     @Nullable
@@ -15,10 +16,14 @@ public class PacketProcess extends Process {
     @NonNull
     protected final IPacketReader packetReader;
 
-    public PacketProcess(long id, @NonNull IPacketReader packetReader) {
+    @NonNull
+    protected final ILogger logger;
+
+    public PacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger) {
         super(id);
         this.packetReader = packetReader;
-        runnable = () -> this.packetReader.read(packet);
+        this.logger = logger;
+        runnable = this;
     }
 
     @Override
@@ -35,6 +40,16 @@ public class PacketProcess extends Process {
         super.restore();
         if (packet != null){
             packet.restore();
+        }
+    }
+
+    @Override
+    public void run() {
+
+        try {
+            packetReader.read(packet);
+        } catch (Throwable e) {
+            logger.exception(e, "Failed process packet");
         }
     }
 }
