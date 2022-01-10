@@ -1,18 +1,18 @@
 package com.pro100kryto.server.utils.datagram.pool;
 
-import com.pro100kryto.server.utils.datagram.packet.Packet;
+import com.pro100kryto.server.utils.datagram.packet.DatagramPacketWrapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class PoolPacketFactory extends APoolObjectFactory<Packet> {
+public final class PoolPacketFactory extends APoolObjectFactory<DatagramPacketWrapper> {
     private final int packetCapacity;
 
     @Override
-    public Packet createRecycled() {
+    public DatagramPacketWrapper createRecycled() {
         return new PoolPacket(packetCapacity);
     }
 
-    private final class PoolPacket extends Packet {
+    private final class PoolPacket extends DatagramPacketWrapper {
         /**
          * create new packet
          */

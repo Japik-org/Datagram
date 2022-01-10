@@ -1,7 +1,7 @@
 package com.pro100kryto.server.utils.datagram.process;
 
 import com.pro100kryto.server.logger.ILogger;
-import com.pro100kryto.server.utils.datagram.packet.Packet;
+import com.pro100kryto.server.utils.datagram.packet.DatagramPacketWrapper;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class PacketProcess extends Process implements Runnable {
 
     @Getter @Setter
     @Nullable
-    protected Packet packet = null;
+    protected DatagramPacketWrapper packet = null;
 
     public PacketProcess(long id, @NonNull IPacketReader packetReader, @NonNull ILogger logger,
                          boolean recycleOnFinish){
