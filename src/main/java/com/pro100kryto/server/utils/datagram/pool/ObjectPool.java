@@ -42,7 +42,7 @@ public class ObjectPool <T extends IRecyclable>
     }
 
     public void put(T object){
-        if (!object.isRecycled()){
+        if (object.getStatus() != RecycleStatus.Recycled){
             object.recycle();
         }
         if (!pool.contains(object)) {

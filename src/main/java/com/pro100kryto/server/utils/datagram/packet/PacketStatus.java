@@ -5,8 +5,6 @@ public enum PacketStatus {
     Ready,
     /** containing received data, ready to read */
     Received,
-    /** final packet for send, ready to read */
-    Final,
     /** recycled, does not use anymore */
     Recycled
 }

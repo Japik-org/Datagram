@@ -1,9 +1,14 @@
 package com.pro100kryto.server.utils.datagram.pool;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public final class RecycleContainer<T> implements IRecyclable {
     private final ObjectPool<RecycleContainer<T>> pool;
+    @Getter @Setter
     private T object;
-    private boolean isRecycled = true;
+    @Getter
+    private RecycleStatus status;
 
     public RecycleContainer(ObjectPool<RecycleContainer<T>> pool, T object) {
         this.pool = pool;
@@ -12,24 +17,17 @@ public final class RecycleContainer<T> implements IRecyclable {
 
     @Override
     public synchronized void recycle() {
-        isRecycled = true;
+        status = RecycleStatus.Recycled;
         pool.put(this);
     }
 
     @Override
-    public synchronized boolean isRecycled() {
-        return isRecycled;
+    public synchronized void restore() {
+        status = RecycleStatus.Restored;
     }
 
     @Override
-    public synchronized void restore() {
-        isRecycled = false;
-    }
-
-    public T getObject() {
-        return object;
-    }
-    public void setObject(T object){
-        this.object = object;
+    public void destroy() {
+        status = RecycleStatus.Destroyed;
     }
 }

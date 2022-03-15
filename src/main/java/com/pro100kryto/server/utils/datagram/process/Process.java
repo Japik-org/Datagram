@@ -1,6 +1,7 @@
 package com.pro100kryto.server.utils.datagram.process;
 
 import com.pro100kryto.server.utils.datagram.pool.IRecyclable;
+import com.pro100kryto.server.utils.datagram.pool.RecycleStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ public class Process implements IRecyclable, Closeable {
     protected final long id;
 
     @Getter
-    protected boolean isRecycled = true;
+    protected RecycleStatus status;
     @Getter
     protected IProcessExecution processExecution;
 
@@ -62,12 +63,17 @@ public class Process implements IRecyclable, Closeable {
         if (!processExecution.isDone()){
             processExecution.stop();
         }
-        isRecycled = true;
+        status = RecycleStatus.Recycled;
     }
 
     @Override
     public void restore() {
-        isRecycled = false;
+        status = RecycleStatus.Restored;
+    }
+
+    @Override
+    public void destroy() {
+        status = RecycleStatus.Destroyed;
     }
 
     @Override

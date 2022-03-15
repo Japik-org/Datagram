@@ -1,29 +1,24 @@
 package com.pro100kryto.server.utils.datagram.packet;
 
 import com.pro100kryto.server.utils.datagram.pool.IRecyclable;
+import com.pro100kryto.server.utils.datagram.pool.RecycleStatus;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.Synchronized;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-public class DatagramPacketWrapper implements IRecyclable, Closeable {
-    @Getter(onMethod_={@Synchronized}) @Setter(onMethod_={@Synchronized})
-    private PacketStatus packetStatus;
+@Getter
+public class DatagramPacketRecyclable implements IRecyclable {
+    private RecycleStatus status;
 
-    @Getter
     protected final ByteBuffer buffer;
-
-    @Getter
     protected final DatagramPacket datagramPacket;
 
-    public DatagramPacketWrapper(int capacity) {
-        packetStatus = PacketStatus.Ready;
+    public DatagramPacketRecyclable(int capacity) {
+        status = RecycleStatus.Recycled;
         buffer = ByteBuffer.allocate(capacity);
 
         datagramPacket = new DatagramPacket(
@@ -33,11 +28,8 @@ public class DatagramPacketWrapper implements IRecyclable, Closeable {
         );
     }
 
-    /**
-     * create new packet
-     */
-    public DatagramPacketWrapper(int capacity, InetSocketAddress address){
-        packetStatus = PacketStatus.Ready;
+    public DatagramPacketRecyclable(int capacity, InetSocketAddress address){
+        status = RecycleStatus.Recycled;
         buffer = ByteBuffer.allocate(capacity);
 
         datagramPacket = new DatagramPacket(
@@ -48,31 +40,32 @@ public class DatagramPacketWrapper implements IRecyclable, Closeable {
         );
     }
 
+    @Override
+    public final synchronized RecycleStatus getStatus() {
+        return status;
+    }
+
+    protected final synchronized void setStatus(RecycleStatus status) {
+        this.status = status;
+    }
+
     public DatagramPacket receive(DatagramSocket datagramSocket) throws IOException {
         datagramSocket.receive(datagramPacket);
-        setPacketStatus(PacketStatus.Received);
         return datagramPacket;
     }
 
     public void recycle() {
         buffer.clear();
         datagramPacket.setData(buffer.array(), 0, buffer.capacity());
-        setPacketStatus(PacketStatus.Recycled);
-    }
-
-    public final boolean isRecycled() {
-        return getPacketStatus() == PacketStatus.Recycled;
+        setStatus(RecycleStatus.Recycled);
     }
 
     public void restore() {
-        setPacketStatus(PacketStatus.Ready);
+        setStatus(RecycleStatus.Restored);
     }
 
-    /**
-     * recycle
-     */
     @Override
-    public void close() {
-        this.recycle();
+    public void destroy() {
+        setStatus(RecycleStatus.Destroyed);
     }
 }

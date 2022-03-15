@@ -1,8 +1,8 @@
 package com.pro100kryto.server.utils.datagram.process;
 
 
-import com.pro100kryto.server.utils.datagram.packet.DatagramPacketWrapper;
+import com.pro100kryto.server.utils.datagram.packet.DatagramPacketRecyclable;
 
 public interface IPacketReader {
-    void read(DatagramPacketWrapper packet) throws Throwable;
+    void read(DatagramPacketRecyclable packet) throws Throwable;
 }
